@@ -2,10 +2,14 @@ package com.luksiv.entdiffy.processor.codegen
 
 import com.luksiv.entdiffy.processor.models.ModelData
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.TypeSpec
 
 class DiffUtilCodeBuilder(
     private val data: ModelData,
 ) {
+
+    private val modelClassName = ClassName(data.packageName, data.modelName)
 
     private val diffResultName = "${data.modelName}DiffResult"
     private val diffResultClassName = ClassName(data.packageName, diffResultName)
@@ -13,30 +17,31 @@ class DiffUtilCodeBuilder(
     private val diffUtilName = "${data.modelName}DiffUtil"
     private val diffUtilClassName = ClassName(data.packageName, diffUtilName)
 
-//    fun build(): TypeSpec {
-//        return TypeSpec.classBuilder()
-//    }
-}
+    fun build(): TypeSpec {
+        return with(TypeSpec.objectBuilder(diffUtilClassName)) {
+            val code = """
+                
+                return ${diffResultName} (
+                ${
+            data.modelFields.map {
+                "${it.fieldName}Changed = first.${it.fieldName} != second.${it.fieldName}"
+            }.joinToString(",\n")
+            }
+                )
+                
+            """.trimIndent()
 
-//// GENERATED
-//data class PersonDiffResult(
-//    val firstNameChanged: Boolean,
-//    val lastNameChanged: Boolean,
-//    val addressChanged: Boolean,
-//    val countryChanged: Boolean,
-//    val ageChanged: Boolean,
-//)
-//
-//// GENERATED
-//object PersonDiffUtil {
-//
-//    fun getDiff(a: Person?, b: Person?): PersonDiffResult {
-//        return PersonDiffResult(
-//            a?.firstName != b?.firstName,
-//            a?.lastName != b?.firstName,
-//            a?.address != b?.address,
-//            a?.country != b?.country,
-//            a?.age != b?.age,
-//        )
-//    }
-//}
+            val diffFun = FunSpec.builder("calculateDiff")
+                .addParameter("first", modelClassName)
+                .addParameter("second", modelClassName)
+                .addCode(code)
+
+                .returns(diffResultClassName)
+                .build()
+
+            addFunction(diffFun)
+
+            build()
+        }
+    }
+}

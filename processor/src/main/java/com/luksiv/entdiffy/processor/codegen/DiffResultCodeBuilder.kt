@@ -26,7 +26,7 @@ class DiffResultCodeBuilder(
             propertySpecs.add(propertySpec.build())
         }
 
-        return with(TypeSpec.classBuilder(diffResultName)) {
+        return with(TypeSpec.classBuilder(diffResultClassName)) {
             addModifiers(KModifier.DATA)
 
             primaryConstructor(primaryConstructorBuilder.build())

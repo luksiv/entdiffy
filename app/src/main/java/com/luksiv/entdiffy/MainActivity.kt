@@ -3,7 +3,7 @@ package com.luksiv.entdiffy
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.luksiv.entdiffy.entities.Person
-import com.luksiv.entdiffy.entities.PersonDiffResult
+import com.luksiv.entdiffy.entities.PersonDiffUtil
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,6 +13,17 @@ class MainActivity : AppCompatActivity() {
         val person_1 = Person("Lukas", "Sivickas", "Vilnius", "Lithuania", "22")
         val person_2 = Person("Edgar", "Zigis", "Kaunas", "Poland", "30")
 
-        val a = PersonDiffResult(false, false, false, false, false)
+        val result = PersonDiffUtil.calculateDiff(person_1, person_2)
+
+        println(result)
     }
+}
+
+fun main(args: Array<String>) {
+    val person_1 = Person("Lukas", "Sivickas", "Vilnius", "Lithuania", "22")
+    val person_2 = Person("Edgar", "Zigis", "Vilnius", "Lithuania", "30")
+
+    val result = PersonDiffUtil.calculateDiff(person_1, person_2)
+
+    println(result)
 }

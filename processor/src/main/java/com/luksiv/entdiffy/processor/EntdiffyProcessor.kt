@@ -3,6 +3,7 @@ package com.luksiv.entdiffy.processor
 import com.google.auto.service.AutoService
 import com.luksiv.entdiffy.annotations.DiffEntity
 import com.luksiv.entdiffy.processor.codegen.DiffResultCodeBuilder
+import com.luksiv.entdiffy.processor.codegen.DiffUtilCodeBuilder
 import com.luksiv.entdiffy.processor.models.ModelData
 import com.luksiv.entdiffy.processor.models.ModelField
 import com.squareup.kotlinpoet.FileSpec
@@ -11,7 +12,6 @@ import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
-import javax.tools.Diagnostic
 
 @AutoService(Processor::class)
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
@@ -40,6 +40,11 @@ class EntdiffyProcessor : AbstractProcessor() {
                     .addType(DiffResultCodeBuilder(modelData).build())
                     .build()
                     .writeTo(File(kaptKotlinGeneratedDir))
+
+                FileSpec.builder(modelData.packageName, diffUtilFileName)
+                    .addType(DiffUtilCodeBuilder(modelData).build())
+                    .build()
+                    .writeTo(File(kaptKotlinGeneratedDir))
             }
 
         return true
@@ -51,14 +56,12 @@ class EntdiffyProcessor : AbstractProcessor() {
         val modelName = elem.simpleName.toString() // 2
 
         val modelFields = elem.enclosedElements.mapNotNull {
-            processingEnv.messager.printMessage(Diagnostic.Kind.NOTE, "processing enclosed element", it)
             if(it.kind.isField) {
                 val elementName = it.simpleName.toString()
                 val fieldType = it.asType()
 
                 ModelField(elementName, fieldType)
             } else {
-                processingEnv.messager.printMessage(Diagnostic.Kind.WARNING, "Only fields can be used with @DiffEntity", elem)
                 null
             }
         }
