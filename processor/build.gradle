@@ -2,34 +2,20 @@ plugins {
     id 'java-library'
     id 'kotlin'
     id 'kotlin-kapt'
-    id 'maven-publish'
 }
 
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId 'com.luksiv.entdiffy'
-            artifactId 'processor'
-            version '1.0.0'
-        }
-    }
-}
-
-repositories {
-    mavenCentral()
-}
 compileKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
     }
 }
-compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
+
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
 
 dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
     implementation project(':annotations')
 
     implementation 'com.squareup:kotlinpoet:1.6.0'
