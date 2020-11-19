@@ -1,6 +1,17 @@
-apply plugin: 'kotlin'
+plugins {
+    id 'kotlin'
+    id 'maven-publish'
+}
 
-group = "com.luksiv.entdiffy"
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId 'com.luksiv.entdiffy'
+            artifactId 'annotations'
+            version '1.0.0'
+        }
+    }
+}
 
 repositories {
     mavenCentral()
