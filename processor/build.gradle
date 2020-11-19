@@ -2,19 +2,6 @@ plugins {
     id 'java-library'
     id 'kotlin'
     id 'kotlin-kapt'
-    id 'maven-publish'
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId 'com.github.luksiv'
-            artifactId 'processor'
-            version '1.0.0'
-
-            from components.java
-        }
-    }
 }
 
 repositories {
@@ -26,7 +13,11 @@ compileKotlin {
     }
 }
 
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
+
 dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':annotations')
 
     implementation 'com.squareup:kotlinpoet:1.6.0'
