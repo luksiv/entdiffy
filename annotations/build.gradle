@@ -1,6 +1,19 @@
 plugins {
     id 'java-library'
     id 'kotlin'
+    id 'maven-publish'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId 'com.github.luksiv'
+            artifactId 'annotations'
+            version '1.0.0'
+
+            from components.java
+        }
+    }
 }
 
 compileKotlin {
@@ -8,9 +21,6 @@ compileKotlin {
         jvmTarget = "1.8"
     }
 }
-
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
