@@ -2,6 +2,7 @@ package com.luksiv.entdiffy.processor.codegen
 
 import com.luksiv.entdiffy.processor.models.ModelData
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.TypeSpec
 
@@ -19,28 +20,64 @@ class DiffUtilCodeBuilder(
 
     fun build(): TypeSpec {
         return with(TypeSpec.objectBuilder(diffUtilClassName)) {
-            val code = """
-                
-                return ${diffResultName} (
-                ${
-            data.modelFields.map {
-                "${it.fieldName}Changed = first.${it.fieldName} != second.${it.fieldName}"
-            }.joinToString(",\n")
-            }
-                )
-                
-            """.trimIndent()
+            addFunction(getCalculateDiffFunSpec())
+            addKdoc("Diffing utility class for [${data.modelName}] entity")
+            build()
+        }
+    }
 
-            val diffFun = FunSpec.builder("calculateDiff")
-                .addParameter("first", modelClassName)
-                .addParameter("second", modelClassName)
-                .addCode(code)
+    private fun getCalculateDiffFunSpec(): FunSpec {
+        return with(FunSpec.builder("calculateDiff")) {
+            addKdoc(
+                "Diffing utility object for [${data.modelName}] entity\n" +
+                        "@param first first [${data.modelName}]\n" +
+                        "@param second second [${data.modelName}]\n" +
+                        "@return [${diffResultName}] containing data of what are the differences of entities\n"
+            )
 
-                .returns(diffResultClassName)
-                .build()
+            addParameter("first", modelClassName.copy(true))
+            addParameter("second", modelClassName.copy(true))
 
-            addFunction(diffFun)
+            addCode(with(CodeBlock.builder()) {
 
+                // Check if either are null
+                beginControlFlow("if(first == null && second != null || first != null && second == null)")
+                addStatement("return $diffResultName(")
+                indent()
+                data.modelFields.forEach {
+                    addStatement("${it.fieldName}Changed = false,")
+                }
+                unindent()
+                addStatement(")")
+
+                // Check if both are null
+                nextControlFlow("else if(first == null && second == null)")
+                addStatement("return $diffResultName(")
+
+                indent()
+                data.modelFields.forEach {
+                    addStatement("${it.fieldName}Changed = false,")
+                }
+                unindent()
+                addStatement(")")
+
+                // Check each parameter if checked
+                nextControlFlow("else")
+                addStatement("return $diffResultName(")
+                indent()
+                data.modelFields.forEach {
+                    addStatement("${it.fieldName}Changed = first?.${it.fieldName} != second?.${it.fieldName},")
+                }
+                unindent()
+                addStatement(")")
+
+                endControlFlow()
+
+                build()
+
+            })
+
+            returns(diffResultClassName)
             build()
         }
     }

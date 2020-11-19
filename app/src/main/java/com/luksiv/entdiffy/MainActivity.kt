@@ -19,11 +19,14 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-fun main(args: Array<String>) {
+fun main() {
     val person_1 = Person("Lukas", "Sivickas", "Vilnius", "Lithuania", "22")
     val person_2 = Person("Edgar", "Zigis", "Vilnius", "Lithuania", "30")
+    val cachedPerson = null
 
     val result = PersonDiffUtil.calculateDiff(person_1, person_2)
-
     println(result)
+
+    val result_b = PersonDiffUtil.calculateDiff(person_1, cachedPerson)
+    println(result_b)
 }

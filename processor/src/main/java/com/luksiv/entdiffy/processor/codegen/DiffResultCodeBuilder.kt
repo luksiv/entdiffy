@@ -27,6 +27,13 @@ class DiffResultCodeBuilder(
         }
 
         return with(TypeSpec.classBuilder(diffResultClassName)) {
+            addKdoc(with(CodeBlock.builder()) {
+                addStatement("Diffing utility result class for [${data.modelName}] entity")
+                data.modelFields.forEach {
+                    addStatement("@param ${getConstructorFieldName(it.fieldName)} boolean whether the [${data.modelName}.${it.fieldName}] is different")
+                }
+                build()
+            })
             addModifiers(KModifier.DATA)
 
             primaryConstructor(primaryConstructorBuilder.build())
@@ -43,12 +50,3 @@ class DiffResultCodeBuilder(
         return "${fieldName}Changed"
     }
 }
-
-//// GENERATED
-//data class PersonDiffResult(
-//    val firstNameChanged: Boolean,
-//    val lastNameChanged: Boolean,
-//    val addressChanged: Boolean,
-//    val countryChanged: Boolean,
-//    val ageChanged: Boolean,
-//)
