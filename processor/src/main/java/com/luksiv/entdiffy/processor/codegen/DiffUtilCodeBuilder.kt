@@ -45,7 +45,7 @@ class DiffUtilCodeBuilder(
                 addStatement("return $diffResultName(")
                 indent()
                 data.modelFields.forEach {
-                    addStatement("${it.fieldName}Changed = false,")
+                    addStatement("${it.fieldName}Changed = true,")
                 }
                 unindent()
                 addStatement(")")
