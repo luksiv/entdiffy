@@ -4,6 +4,7 @@ import com.google.auto.service.AutoService
 import com.luksiv.entdiffy.annotations.DiffEntity
 import com.luksiv.entdiffy.processor.codegen.DiffResultCodeBuilder
 import com.luksiv.entdiffy.processor.codegen.DiffUtilCodeBuilder
+import com.luksiv.entdiffy.processor.codegen.DiffUtilExtensionsCodeBuilder
 import com.luksiv.entdiffy.processor.models.ModelData
 import com.luksiv.entdiffy.processor.models.ModelField
 import com.squareup.kotlinpoet.FileSpec
@@ -35,6 +36,7 @@ class EntdiffyProcessor : AbstractProcessor() {
                 val modelData = getModelData(it)
 
                 val diffUtilFileName = "${modelData.modelName}DiffUtil"
+                val diffUtilExtensionsFileName = "${modelData.modelName}DiffUtilExtensions"
                 val diffResultFileName = "${modelData.modelName}DiffResult"
 
                 FileSpec.builder(modelData.packageName, diffResultFileName)
@@ -46,6 +48,12 @@ class EntdiffyProcessor : AbstractProcessor() {
                 FileSpec.builder(modelData.packageName, diffUtilFileName)
                     .addComment(LICENSE_HEADER)
                     .addType(DiffUtilCodeBuilder(modelData).build())
+                    .build()
+                    .writeTo(File(kaptKotlinGeneratedDir))
+
+                FileSpec.builder(modelData.packageName, diffUtilExtensionsFileName)
+                    .addComment(LICENSE_HEADER)
+                    .addType(DiffUtilExtensionsCodeBuilder(modelData).build())
                     .build()
                     .writeTo(File(kaptKotlinGeneratedDir))
             }

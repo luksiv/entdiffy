@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.luksiv.entdiffy.entities.Person
 import com.luksiv.entdiffy.entities.PersonDiffUtil
+import com.luksiv.entdiffy.entities.PersonDiffUtilExtensions.calculateDiff
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,4 +30,6 @@ fun main() {
 
     val result_b = PersonDiffUtil.calculateDiff(person_1, cachedPerson)
     println(result_b)
+
+    println(person_1.calculateDiff(cachedPerson))
 }
