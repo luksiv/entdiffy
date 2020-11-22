@@ -37,6 +37,12 @@ public object PersonDiffUtil {
     }
 }
 ```
+Or if you preffer using extensions, there are also those:
+```
+public object PersonDiffUtilExtensions {
+    public fun Person.calculateDiff(other: Person?): PersonDiffResult = PersonDiffUtil.calculateDiff(this, other)
+}
+```
 ## Results 
 The library also generates the results class, which has boolean variables whether a parameter has changed:
 ```
