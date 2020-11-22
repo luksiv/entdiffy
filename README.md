@@ -2,7 +2,16 @@
 
 
 # Usage in your project
-Firstly add these dependencies:
+Firstly add jitpack.io Maven repository:
+```
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+        ...
+    }
+}
+```
+Then add these dependancies:
 ```
 implementation 'com.github.luksiv.entdiffy:annotations:latestVersion'
 kapt 'com.github.luksiv.entdiffy:processor:latestVersion'
